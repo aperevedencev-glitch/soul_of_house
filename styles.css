@@ -181,11 +181,13 @@ td:not(:first-child){font-weight:500;color:#5c4f40}
 .cta.with-mascot .cta-copy h2{margin:0 0 14px;max-width:520px}
 .cta.with-mascot .cta-copy p{margin:0 0 26px;max-width:480px}
 .cta-mascot{flex:0 0 auto;width:190px;height:auto;display:block;filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))}
+.cta-mascot.photo-card{width:230px;border-radius:20px;box-shadow:0 18px 40px rgba(0,0,0,.28);filter:none}
 @media (max-width:760px){
   .cta.with-mascot{flex-direction:column;text-align:center;padding:36px 24px}
   .cta.with-mascot .cta-copy h2,.cta.with-mascot .cta-copy p{margin-left:auto;margin-right:auto}
   .cta.with-mascot .cta-copy div{justify-content:center}
   .cta-mascot{width:150px;order:-1}
+  .cta-mascot.photo-card{width:200px}
 }
 
 /* ---------- blog ---------- */
