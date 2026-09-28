@@ -309,7 +309,7 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
 
 /* ---------- ABOUT ---------- */
-.about-grid{grid-template-columns:.8fr 1.2fr;}
+.about-grid{grid-template-columns:1.2fr .8fr;}
 .arch.light{border-color:var(--line);background:var(--paper);}
 .about-h{font-size:30px;line-height:1.25;}
 .about-text{display:flex;flex-direction:column;gap:14px;margin-top:18px;max-width:560px;color:var(--text-body);}
