@@ -376,3 +376,6 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 
 .arch img.pos-ball{object-position:50% 68%;}
 .hero-cta{margin-top:28px;}
+
+.cta-cat{width:220px;max-width:60%;height:auto;margin-bottom:4px;filter:drop-shadow(0 0 36px rgba(228,199,126,.2));}
+@media (max-width:520px){.cta-cat{width:170px;}}
