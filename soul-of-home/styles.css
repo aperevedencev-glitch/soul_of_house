@@ -393,3 +393,4 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 .arch.cta-arch{max-width:330px;}
 @media (max-width:820px){.arch.cta-arch{max-width:255px;}}
 .arch img.pos-star{object-position:50% 56%;}
+.arch img.pos-red{object-position:50% 50%;}
