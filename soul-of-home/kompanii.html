@@ -106,6 +106,9 @@
 .lm .step{padding:18px;gap:14px}
 .lm .cat{justify-content:center;margin-top:8px}
 .lm .cat img{width:180px}}
+@keyframes lmRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.lm .thanks:not([hidden]){animation:lmRise .45s cubic-bezier(.2,.7,.3,1) both}
+.lm .gated .step{transition:filter .5s ease}
 </style>
 <section class="lm-sec lm-hero">
   <img class="bg" src="img/lm-tree.jpg" alt="">
