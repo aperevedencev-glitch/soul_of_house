@@ -41,6 +41,8 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
 </script>
 </head>
 <body>
+<div class="preloader" id="preloader" aria-hidden="true"><div class="pl-inner"><span class="pl-ring"></span><span class="pl-logo">Soul of Home</span></div></div>
+<script>(function(){var seen=false;try{seen=sessionStorage.getItem('soh-seen')==='1';sessionStorage.setItem('soh-seen','1');}catch(e){}var p=document.getElementById('preloader');if(seen){p.parentNode.removeChild(p);return;}var done=false;function hide(){if(done)return;done=true;p.classList.add('pl-done');setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},600);}if(document.readyState==='complete')hide();else window.addEventListener('load',hide);setTimeout(hide,4000);})();</script>
 <header class="site">
   <div class="nav-inner">
     <a class="logo" href="./"><span class="mark"></span> Soul of Home</a>
@@ -59,6 +61,7 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
 </header>
 <main>
 <section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow light">Мастерская и школа ручной работы</p>
@@ -193,6 +196,35 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
         <h3>Фактура</h3>
         <p>Гладкое, мягкое и рельефное в одной композиции: например, атлас, бархат и кружево на одном шаре.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="reviews" id="reviews" aria-label="Отзывы">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Отзывы</p>
+      <h2>Что говорят ученицы и клиенты</h2>
+    </div>
+    <div class="reviews-slider" data-slider aria-roledescription="карусель">
+      <button class="sl-arrow sl-prev" type="button" aria-label="Предыдущий отзыв"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="sl-viewport"><div class="sl-track">
+<!-- ОТЗЫВЫ: замените текст в трёх карточках на настоящие отзывы и уберите у них класс is-template -->
+    <figure class="sl-slide is-template">
+      <blockquote>Здесь будет отзыв — вставьте слова ученицы или клиента: что делали, что получилось, что понравилось.</blockquote>
+      <figcaption><b>[Имя, город]</b><span>[Курс или заказ, например «Бархатный шар»]</span></figcaption>
+    </figure>
+    <figure class="sl-slide is-template">
+      <blockquote>Здесь будет отзыв — вставьте слова ученицы или клиента: что делали, что получилось, что понравилось.</blockquote>
+      <figcaption><b>[Имя, город]</b><span>[Курс или заказ, например «Бархатный шар»]</span></figcaption>
+    </figure>
+    <figure class="sl-slide is-template">
+      <blockquote>Здесь будет отзыв — вставьте слова ученицы или клиента: что делали, что получилось, что понравилось.</blockquote>
+      <figcaption><b>[Имя, город]</b><span>[Курс или заказ, например «Бархатный шар»]</span></figcaption>
+    </figure>
+      </div></div>
+      <button class="sl-arrow sl-next" type="button" aria-label="Следующий отзыв"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="sl-dots" role="group" aria-label="Выбор отзыва"></div>
     </div>
   </div>
 </section>

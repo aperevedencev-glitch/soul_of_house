@@ -41,6 +41,8 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
 </script>
 </head>
 <body>
+<div class="preloader" id="preloader" aria-hidden="true"><div class="pl-inner"><span class="pl-ring"></span><span class="pl-logo">Soul of Home</span></div></div>
+<script>(function(){var seen=false;try{seen=sessionStorage.getItem('soh-seen')==='1';sessionStorage.setItem('soh-seen','1');}catch(e){}var p=document.getElementById('preloader');if(seen){p.parentNode.removeChild(p);return;}var done=false;function hide(){if(done)return;done=true;p.classList.add('pl-done');setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},600);}if(document.readyState==='complete')hide();else window.addEventListener('load',hide);setTimeout(hide,4000);})();</script>
 <header class="site">
   <div class="nav-inner">
     <a class="logo" href="./"><span class="mark"></span> Soul of Home</a>

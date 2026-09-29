@@ -183,3 +183,112 @@
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+// ===== Анимации появления, прогресс чтения, кнопка «Наверх» =====
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 1) блоки и карточки: плавно снизу вверх, карточки в сетке — по очереди через 0.1s, один раз
+  var GRIDS = '.modules, .works-strip, .proof-grid, .compare, .hero-stats, .foot-grid, .gallery, .lessons, .b2b-grid';
+  if('IntersectionObserver' in window && !reduce){
+    document.documentElement.classList.add('rv-on');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ var t = e.target; t.classList.add('rv-in'); io.unobserve(t);
+        // после появления снимаем классы анимации, чтобы работали обычные hover-эффекты
+        var d = parseFloat(t.style.getPropertyValue('--rv-delay')) || 0;
+        setTimeout(function(){ t.classList.remove('rv', 'rv-in'); t.style.removeProperty('--rv-delay'); t.dataset.rvDone = '1'; }, 700 + d * 1000); } });
+    }, {rootMargin: '0px 0px -8% 0px', threshold: 0.08});
+    var mark = function(el, delay){ if(el.classList.contains('rv') || el.dataset.rvDone) return; el.classList.add('rv'); if(delay) el.style.setProperty('--rv-delay', delay + 's'); io.observe(el); };
+    var scan = function(root){
+      (root || document).querySelectorAll('main section .wrap > *, body > section .wrap > *, .page > section .wrap > *, .lm-sec .wrap > *').forEach(function(el){
+        if(el.matches(GRIDS)){ Array.prototype.forEach.call(el.children, function(ch, i){ mark(ch, Math.min(i, 8) * 0.1); }); }
+        else mark(el, 0);
+      });
+    };
+    scan();
+    window.SOH_reveal = scan; // для карточек, которые скрипт добавляет позже (галерея)
+    // галерея «Мои работы» строится скриптом — отмечаем её карточки, когда они появились
+    var gal = document.getElementById('gallery');
+    if(gal){ new MutationObserver(function(){ Array.prototype.forEach.call(gal.children, function(ch, i){ mark(ch, (i % 4) * 0.1); }); }).observe(gal, {childList: true}); Array.prototype.forEach.call(gal.children, function(ch, i){ mark(ch, (i % 4) * 0.1); }); }
+  }
+
+  // 2) прогресс чтения под шапкой
+  var header = document.querySelector('header.site');
+  var bar = null;
+  if(header){ bar = document.createElement('div'); bar.className = 'read-progress'; bar.setAttribute('aria-hidden', 'true'); header.appendChild(bar); }
+
+  // 3) кнопка «Наверх»
+  var top = document.createElement('button');
+  top.type = 'button'; top.className = 'to-top'; top.setAttribute('aria-label', 'Наверх');
+  top.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  top.addEventListener('click', function(){ window.scrollTo({top: 0, behavior: reduce ? 'auto' : 'smooth'}); });
+  document.body.appendChild(top);
+
+  var ticking = false;
+  function update(){
+    ticking = false;
+    var y = window.scrollY || document.documentElement.scrollTop;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    if(bar) bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+    top.classList.toggle('show', y > 400);
+    top.tabIndex = y > 400 ? 0 : -1;
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive: true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
+// ===== Слайдер отзывов: автопрокрутка 4 с, точки, стрелки, пауза при наведении, свайп =====
+(function(){
+  document.querySelectorAll('[data-slider]').forEach(function(root){
+    var track = root.querySelector('.sl-track'), slides = track.children, n = slides.length, i = 0, timer = null, paused = false;
+    var dotsBox = root.querySelector('.sl-dots'), reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(n < 2) return;
+    for(var k = 0; k < n; k++){ (function(k){ var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Отзыв ' + (k + 1) + ' из ' + n); b.addEventListener('click', function(){ go(k); restart(); }); dotsBox.appendChild(b); })(k); }
+    function go(k){
+      i = (k + n) % n; track.style.transform = 'translateX(' + (-100 * i) + '%)';
+      Array.prototype.forEach.call(slides, function(s, j){ s.setAttribute('aria-hidden', j === i ? 'false' : 'true'); });
+      Array.prototype.forEach.call(dotsBox.children, function(d, j){ d.setAttribute('aria-current', j === i ? 'true' : 'false'); });
+    }
+    function start(){ if(reduce || timer) return; timer = setInterval(function(){ if(!paused && !document.hidden) go(i + 1); }, 4000); }
+    function restart(){ clearInterval(timer); timer = null; start(); }
+    root.querySelector('.sl-prev').addEventListener('click', function(){ go(i - 1); restart(); });
+    root.querySelector('.sl-next').addEventListener('click', function(){ go(i + 1); restart(); });
+    root.addEventListener('mouseenter', function(){ paused = true; });
+    root.addEventListener('mouseleave', function(){ paused = false; });
+    root.addEventListener('focusin', function(){ paused = true; });
+    root.addEventListener('focusout', function(){ paused = false; });
+    root.addEventListener('keydown', function(e){ if(e.key === 'ArrowLeft'){ go(i - 1); restart(); } if(e.key === 'ArrowRight'){ go(i + 1); restart(); } });
+    // свайп пальцем
+    var vp = root.querySelector('.sl-viewport'), x0 = null, y0 = 0, dx = 0, horiz = null;
+    vp.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; horiz = null; paused = true; }, {passive: true});
+    vp.addEventListener('touchmove', function(e){
+      if(x0 === null) return; dx = e.touches[0].clientX - x0; var dy = e.touches[0].clientY - y0;
+      if(horiz === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) horiz = Math.abs(dx) > Math.abs(dy);
+      if(horiz){ track.classList.add('dragging'); track.style.transform = 'translateX(calc(' + (-100 * i) + '% + ' + dx + 'px))'; }
+    }, {passive: true});
+    vp.addEventListener('touchend', function(){
+      track.classList.remove('dragging');
+      if(horiz && Math.abs(dx) > 50) go(dx < 0 ? i + 1 : i - 1); else go(i);
+      x0 = null; paused = false; restart();
+    });
+    go(0); start();
+  });
+})();
+
+// ===== Параллакс фона главного блока: фон движется вдвое медленнее; на телефоне и планшете выключен =====
+(function(){
+  var bg = document.querySelector('.hero-bg'); if(!bg) return;
+  var hero = bg.parentElement;
+  var mq = window.matchMedia('(min-width: 821px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+  var ticking = false;
+  function apply(){
+    ticking = false;
+    if(!mq.matches){ hero.style.removeProperty('--hero-shift'); return; }
+    var r = hero.getBoundingClientRect();
+    if(r.bottom < 0 || r.top > innerHeight) return;
+    hero.style.setProperty('--hero-shift', (Math.max(0, -r.top) * 0.5).toFixed(1) + 'px');
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(apply); } }, {passive: true});
+  (mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply));
+  apply();
+})();
