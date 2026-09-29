@@ -4,9 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Обучение · Soul of Home</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0E1C16">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
+<script src="analytics-config.js"></script>
+<!-- Яндекс.Метрика -->
+<script>
+(function(id){ if(!id) return;
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+  ym(Number(id), 'init', {clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true});
+})((window.SOH_ANALYTICS || {}).ym);
+</script>
+<!-- /Яндекс.Метрика -->
+<!-- Google Analytics 4 -->
+<script>
+(function(id){ if(!id) return;
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date()); gtag('config', id);
+})((window.SOH_ANALYTICS || {}).ga);
+</script>
+<!-- /Google Analytics 4 -->
+<script>
+// цели: SOH_goal('apply') — одинаково для Метрики и GA4
+window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(window.ym && c.ym) ym(Number(c.ym), 'reachGoal', name); if(window.gtag && c.ga) gtag('event', name); }catch(e){} };
+</script>
 </head>
 <body>
 <header class="site">

@@ -61,6 +61,7 @@
       document.getElementById('successCourse').textContent = r.value;
       document.getElementById('successTg').href = 'https://t.me/SoulHomeRuBot?start=' + r.dataset.tg;
       form.hidden = true; intro.hidden = true; success.hidden = false;
+      if(window.SOH_goal) SOH_goal('apply_course');
     });
   }
 })();
@@ -123,7 +124,7 @@
 
     fab = el('button', 'nc-fab'); fab.type = 'button'; fab.setAttribute('aria-label', 'Открыть чат с Нейрокотом');
     fab.innerHTML = '<img src="img/neurocat-face.jpg" alt=""><span>Спросить Нейрокота</span>';
-    fab.addEventListener('click', open);
+    fab.addEventListener('click', function(){ open(); if(window.SOH_goal) SOH_goal('chat_open'); });
     document.body.appendChild(fab);
   }
 
