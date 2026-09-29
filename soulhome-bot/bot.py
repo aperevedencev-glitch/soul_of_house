@@ -6,7 +6,8 @@
 - заявки на курсы и заказы шаров — пересылает их мастеру (ADMIN_CHAT_ID);
 - отвечает на свободные вопросы как ИИ-помощник: DeepSeek или другой OpenAI-совместимый сервис (AI_API_KEY)
   либо Claude (ANTHROPIC_API_KEY); без ключей — по базе частых вопросов и передаёт вопрос мастеру;
-- мастер отвечает клиенту прямо из своего чата: ответом (reply) на пересланное ботом сообщение.
+- мастер отвечает клиенту прямо из своего чата: ответом (reply) на пересланное ботом сообщение;
+- автоворонка для компаний «Офис к Новому году» (funnel.py): ссылка t.me/SoulHomeRuBot?start=office.
 """
 import json
 import logging
@@ -22,6 +23,7 @@ from telegram.constants import ChatAction, ChatType
 from telegram.ext import (Application, CallbackQueryHandler, CommandHandler,
                           ContextTypes, MessageHandler, filters)
 
+import funnel as F
 import knowledge as K
 
 load_dotenv()
@@ -138,6 +140,16 @@ async def notify_admin(context: ContextTypes.DEFAULT_TYPE, update: Update, title
 # ---------- команды ----------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data.clear()
+    arg = (context.args[0] if context.args else "").lower()
+    if arg in F.ENTRY_ARGS:  # вход в автоворонку для компаний
+        caption = "Мур! Я Нейрокот, помощник студии Soul of Home 🐾 Оформляем офисы к новогодним корпоративам под ключ."
+        if WELCOME_PHOTO.exists():
+            with WELCOME_PHOTO.open("rb") as f:
+                await update.message.reply_photo(f, caption=caption, reply_markup=MENU)
+        else:
+            await update.message.reply_text(caption, reply_markup=MENU)
+        await F.enter(update, context, source=arg)
+        return
     name = update.effective_user.first_name or "друг"
     text = K.WELCOME.format(name=name)
     if WELCOME_PHOTO.exists():
@@ -145,8 +157,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await update.message.reply_photo(f, caption=text, reply_markup=MENU)
     else:
         await update.message.reply_text(text, reply_markup=MENU)
-    # глубокая ссылка: t.me/SoulHomeRuBot?start=velvet | order | kursy | uroki
-    arg = (context.args[0] if context.args else "").lower()
+    # глубокая ссылка: t.me/SoulHomeRuBot?start=velvet | order | kursy | uroki | office
     if arg in COURSE_BY_ID:
         await update.message.reply_text(course_text(arg), reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("✍️ Записаться на этот курс", callback_data=f"lead:{arg}")]]))
@@ -323,6 +334,15 @@ async def on_other(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Фото, голосовые и прочее: передаём мастеру (например, фото готовой работы на разбор)."""
     if ADMIN_CHAT_ID and update.effective_chat.id == ADMIN_CHAT_ID:
         return
+    if F.is_active(update.effective_chat.id) and update.message.photo:
+        # фото помещения из автоворонки = заявка на концепцию
+        await F.convert(update, context, "photo", notify_admin, extra=f"Подпись: {update.message.caption or '—'}")
+        if ADMIN_CHAT_ID:
+            fwd = await update.message.forward(ADMIN_CHAT_ID)
+            remember_link(fwd.message_id, update.effective_chat.id)
+        await update.message.reply_text("Спасибо, фото у дизайнера! Концепцию и ориентир по смете пришлём сюда за 2 рабочих дня. "
+                                        "Если есть ещё фото — присылайте 🐾", reply_markup=MENU)
+        return
     if ADMIN_CHAT_ID:
         card = await notify_admin(context, update, "📎 Вложение от клиента", update.message.caption or "(без подписи)")
         if card:
@@ -345,7 +365,9 @@ async def post_init(app: Application) -> None:
         BotCommand("uroki", "Бесплатные уроки"),
         BotCommand("zayavka", "Оставить заявку"),
         BotCommand("help", "Что умеет бот"),
+        BotCommand("stop", "Не присылать мне рассылку"),
     ])
+    F.start_loop(app)
     await app.bot.set_my_short_description("Нейрокот — помощник мастерской Soul of Home: шары ручной работы, курсы и уроки об уюте")
     log.info("Бот запущен. ИИ: %s. Мастер: %s", AI_NAME,
              ADMIN_CHAT_ID or "не задан (узнайте id командой /myid)")
@@ -360,6 +382,7 @@ def build_app() -> Application:
     app.add_handler(CommandHandler("kursy", courses))
     app.add_handler(CommandHandler("uroki", lessons))
     app.add_handler(CommandHandler("zayavka", lead_start))
+    F.register(app, notify_admin, MENU, ADMIN_CHAT_ID)  # воронка — до общих обработчиков
     app.add_handler(CallbackQueryHandler(on_button))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
     app.add_handler(MessageHandler(~filters.TEXT & ~filters.COMMAND & ~filters.StatusUpdate.ALL, on_other))

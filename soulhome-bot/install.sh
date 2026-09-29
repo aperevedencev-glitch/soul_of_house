@@ -15,7 +15,7 @@ apt-get install -y -qq python3 python3-venv python3-pip >/dev/null
 echo "== 2/5 Копирую файлы в $DST =="
 id soulhome >/dev/null 2>&1 || useradd -r -s /usr/sbin/nologin soulhome
 mkdir -p "$DST"
-cp "$SRC"/bot.py "$SRC"/knowledge.py "$SRC"/requirements.txt "$SRC"/neurocat.jpg "$DST"/
+cp "$SRC"/bot.py "$SRC"/funnel.py "$SRC"/knowledge.py "$SRC"/requirements.txt "$SRC"/neurocat.jpg "$DST"/
 [ -f "$DST/.env" ] || cp "$SRC/.env.example" "$DST/.env"
 
 echo "== 3/5 Ставлю библиотеки =="
