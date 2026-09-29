@@ -1,0 +1,5 @@
+.env
+funnel.json
+funnel.tmp
+reply_links.json
+__pycache__/
