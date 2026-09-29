@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /test/
+
+Sitemap: https://your-domain.ru/sitemap.xml
