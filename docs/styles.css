@@ -234,7 +234,7 @@ dialog.work-dialog::backdrop{background:rgba(14,28,22,.72);}
 .lesson.open .lesson-body{display:block;}
 .lesson-body > * + *{margin-top:14px;}
 .lesson-body p{font-size:16px;color:var(--text-body);max-width:58ch;}
-.lesson-body h4{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:16.5px;margin:22px 0 0;}
+.lesson-body h3{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:18px;margin:22px 0 0;}
 .lesson-body ol,.lesson-body ul{margin-top:10px;padding-left:20px;max-width:640px;display:flex;flex-direction:column;gap:8px;}
 .lesson-body li{font-size:14.5px;color:var(--text-body);}
 .lesson-body li::marker{color:var(--gold);font-weight:700;}
@@ -446,14 +446,17 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 @media (prefers-reduced-motion:reduce){.to-top,.to-top.show{transition:none;}}
 
 /* ===== Главный блок: плавный градиент зелёный бархат → золото → красный бархат + параллакс ===== */
-.hero-bg{position:absolute;left:0;right:0;top:-50%;height:150%;pointer-events:none;
-  background:linear-gradient(120deg,#0E1C16 0%,#123A29 22%,#1E4D37 34%,#5C4519 52%,#4C1822 70%,#2A1016 84%,#0E1C16 100%);background-size:320% 320%;
-  animation:heroFlow 8s ease-in-out infinite alternate;transform:translate3d(0,var(--hero-shift,0px),0);will-change:transform;}
+.hero-bg{position:absolute;left:0;right:0;top:-50%;height:150%;pointer-events:none;overflow:hidden;background:#0E1C16;
+  transform:translate3d(0,var(--hero-shift,0px),0);will-change:transform;}
+.hero-bg::before{content:"";position:absolute;top:0;left:0;width:320%;height:100%;
+  background:linear-gradient(120deg,#0E1C16 0%,#123A29 22%,#1E4D37 34%,#5C4519 52%,#4C1822 70%,#2A1016 84%,#0E1C16 100%);
+  animation:heroFlowT 8s ease-in-out infinite alternate;will-change:transform;}
+@keyframes heroFlowT{0%{transform:translate3d(0,0,0);}50%{transform:translate3d(-38%,0,0);}100%{transform:translate3d(-68.75%,0,0);}}
 .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,28,22,.62) 0%,rgba(14,28,22,.35) 55%,rgba(14,28,22,.1) 100%);}
 .hero::after{transform:translate3d(0,var(--hero-shift,0px),0);}
 @keyframes heroFlow{0%{background-position:0% 40%;}50%{background-position:60% 60%;}100%{background-position:100% 50%;}}
 @media (max-width:820px){.hero-bg::after{background:linear-gradient(180deg,rgba(14,28,22,.55),rgba(14,28,22,.4));}}
-@media (prefers-reduced-motion:reduce){.hero-bg{animation:none;background-position:20% 50%;}}
+@media (prefers-reduced-motion:reduce){.hero-bg::before{animation:none;transform:translate3d(-12%,0,0);}}
 
 /* ===== Слайдер отзывов ===== */
 .reviews-slider{position:relative;max-width:820px;margin:0 auto;}
@@ -491,7 +494,7 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 /* ===== «Живой» фон главного экрана: плавающие ёлочные шары ===== */
 .hero-orbs{position:absolute;inset:0;overflow:hidden;}
 .orb{position:absolute;width:var(--s);opacity:var(--o);animation:orbFloat var(--d) ease-in-out var(--dl) infinite alternate;will-change:transform;}
-.orb svg{display:block;width:100%;height:auto;transform-origin:50% 0;animation:orbSway calc(var(--d) * .55) ease-in-out var(--dl) infinite alternate;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));}
+.orb svg{display:block;width:100%;height:auto;transform-origin:50% 0;animation:orbSway calc(var(--d) * .55) ease-in-out var(--dl) infinite alternate;will-change:transform;}
 @keyframes orbFloat{from{transform:translate3d(0,0,0);}to{transform:translate3d(var(--dx),var(--dy),0);}}
 @keyframes orbSway{from{transform:rotate(-5deg);}to{transform:rotate(5deg);}}
 @media (max-width:820px){.orb{width:calc(var(--s) * .65);}.orb.o-desk{display:none;}}
@@ -653,3 +656,7 @@ body.lb-lock{overflow:hidden;}
 .nav-profile{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--pine-deep);text-decoration:none;transition:border-color .2s ease,background .2s ease;}
 .nav-profile[aria-current="page"]{border-color:var(--gold);background:var(--paper);}
 @media (hover:hover) and (pointer:fine){.nav-profile:hover{border-color:var(--gold);}}
+
+/* доступность */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.crumbs a{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(246,241,228,.45);}
