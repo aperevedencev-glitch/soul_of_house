@@ -1,12 +1,12 @@
 // Service worker Soul of Home — приложение на телефоне и работа без сети.
 // Страницы, стили, скрипты и шрифты кешируются при установке; картинки — по мере просмотра.
 // При изменении файлов сайта увеличьте VERSION — старый кеш удалится сам.
-const VERSION = 'v5';
+const VERSION = 'v6';
 const CORE = 'soh-core-' + VERSION;
 const IMAGES = 'soh-img-' + VERSION;
 const OFFLINE = 'offline.html';
 const PRECACHE = [
-  './', 'index.html', 'raboty.html', 'obuchenie.html', 'uroki.html', 'kompanii.html', 'profile.html', OFFLINE,
+  './', 'index.html', 'raboty.html', 'obuchenie.html', 'uroki.html', 'kompanii.html', 'o-nas.html', 'profile.html', OFFLINE,
   'styles.css', 'site.js', 'analytics-config.js', 'manifest.json',
   'fonts/manrope-cyrillic-wght-normal.woff2', 'fonts/manrope-cyrillic-ext-wght-normal.woff2',
   'fonts/manrope-latin-wght-normal.woff2', 'fonts/manrope-latin-ext-wght-normal.woff2',
