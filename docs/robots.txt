@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 Disallow: /test/
+Disallow: /profile.html
 
 Sitemap: https://aperevedencev-glitch.github.io/soul_of_house/sitemap.xml

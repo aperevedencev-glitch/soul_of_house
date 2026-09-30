@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Профиль · Soul of Home</title><meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0E1C16">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+<script src="analytics-config.js"></script>
+<!-- Яндекс.Метрика -->
+<script>
+(function(id){ if(!id) return;
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+  ym(Number(id), 'init', {clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true});
+})((window.SOH_ANALYTICS || {}).ym);
+</script>
+<!-- /Яндекс.Метрика -->
+<!-- Google Analytics 4 -->
+<script>
+(function(id){ if(!id) return;
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date()); gtag('config', id);
+})((window.SOH_ANALYTICS || {}).ga);
+</script>
+<!-- /Google Analytics 4 -->
+<script>
+// цели: SOH_goal('apply') — одинаково для Метрики и GA4
+window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(window.ym && c.ym) ym(Number(c.ym), 'reachGoal', name); if(window.gtag && c.ga) gtag('event', name); }catch(e){} };
+</script>
+</head>
+<body>
+<div class="preloader" id="preloader" aria-hidden="true"><div class="pl-inner"><span class="pl-ring"></span><span class="pl-logo">Soul of Home</span></div></div>
+<script>(function(){var seen=false;try{seen=sessionStorage.getItem('soh-seen')==='1';sessionStorage.setItem('soh-seen','1');}catch(e){}var p=document.getElementById('preloader');if(seen){p.parentNode.removeChild(p);return;}var done=false;function hide(){if(done)return;done=true;p.classList.add('pl-done');setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},600);}if(document.readyState==='complete')hide();else window.addEventListener('load',hide);setTimeout(hide,4000);})();</script>
+<header class="site">
+  <div class="nav-inner">
+    <a class="logo" href="./"><span class="mark"></span> Soul of Home</a>
+    <nav class="nav-links" aria-label="Разделы сайта">
+      <a href="./">Главная</a>
+      <a href="raboty.html">Мои работы</a>
+      <a href="obuchenie.html">Обучение</a>
+      <a href="uroki.html">Уроки</a>
+      <a href="kompanii.html">Для компаний</a>
+    </nav>
+    <div class="nav-right">
+      <a class="nav-profile" href="profile.html" aria-label="Мой профиль" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c1.5-3.6 4.4-5.4 8-5.4s6.5 1.8 8 5.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+      <a class="nav-cta" href="obuchenie.html#apply">Записаться</a>
+      <button class="menu-btn" type="button" aria-label="Меню" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+</header>
+<main>
+<section class="hero compact">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="crumbs"><a href="./">Главная</a> · Профиль</p>
+    <p class="eyebrow light">Личный кабинет</p>
+    <h1>Мой профиль</h1>
+  </div>
+</section>
+
+<section class="profile-sec">
+  <div class="wrap">
+    <div class="profile-card" id="profileCard">
+      <div class="pf-head">
+        <div class="pf-avatar" id="pfAvatar" aria-hidden="true">?</div>
+        <div>
+          <p class="pf-name" id="pfTitle">Гость</p>
+          <p class="pf-since">На сайте с <span id="pfSinceShort">—</span></p>
+        </div>
+      </div>
+
+      <form id="profileForm" class="pf-form" novalidate>
+        <div class="pf-row">
+          <label for="pfName">Имя</label>
+          <input id="pfName" name="name" type="text" autocomplete="name" maxlength="60" placeholder="Как к вам обращаться" readonly>
+          <span class="pf-err" id="pfNameErr" hidden>Укажите имя</span>
+        </div>
+        <div class="pf-row">
+          <label for="pfEmail">Email</label>
+          <input id="pfEmail" name="email" type="email" autocomplete="email" maxlength="80" placeholder="name@example.ru" readonly>
+          <span class="pf-err" id="pfEmailErr" hidden>Проверьте адрес: в нём должны быть «@» и точка</span>
+        </div>
+        <div class="pf-row">
+          <span class="pf-label">Дата регистрации</span>
+          <p class="pf-static" id="pfSince">—</p>
+        </div>
+
+        <div class="pf-actions">
+          <button type="button" class="btn-dark" id="pfEdit">Редактировать</button>
+          <button type="submit" class="btn-primary" id="pfSave" hidden>Сохранить</button>
+          <button type="button" class="pf-cancel" id="pfCancel" hidden>Отмена</button>
+          <p class="pf-status" id="pfStatus" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <p class="pf-note">Профиль хранится только в этом браузере: сайт не передаёт данные на сервер.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="./"><span class="mark"></span> Soul of Home</a>
+        <p>Мастерская и школа ручной работы для уютного дома</p>
+      </div>
+      <nav class="foot-links" aria-label="Разделы сайта">
+        <a href="./">Главная</a><a href="raboty.html">Мои работы</a><a href="obuchenie.html">Обучение</a><a href="uroki.html">Уроки</a><a href="kompanii.html">Для компаний</a><a href="profile.html">Профиль</a><a href="https://t.me/SoulHomeRuBot" target="_blank" rel="noopener">Telegram</a>
+      </nav>
+    </div>
+    <p class="foot-note">© 2026 Soul of Home · Все изделия и фотографии — авторская ручная работа</p>
+  </div>
+</footer>
+<script src="site.js" charset="utf-8"></script>
+
+<script>
+(function(){
+  var KEY = 'soh-profile';
+  var mem = null;
+  function load(){ try{ var v = JSON.parse(localStorage.getItem(KEY) || 'null'); if(v) return v; }catch(e){} return mem; }
+  function store(v){ mem = v; try{ localStorage.setItem(KEY, JSON.stringify(v)); return true; }catch(e){ return false; } }
+  var data = load();
+  if(!data){ data = {name: '', email: '', since: new Date().toISOString()}; store(data); }
+
+  var f = document.getElementById('profileForm'), nameI = document.getElementById('pfName'), mailI = document.getElementById('pfEmail');
+  var av = document.getElementById('pfAvatar'), title = document.getElementById('pfTitle');
+  var bEdit = document.getElementById('pfEdit'), bSave = document.getElementById('pfSave'), bCancel = document.getElementById('pfCancel'), status = document.getElementById('pfStatus');
+  var COLORS = ['#16281F', '#8C2F3B', '#7A5A1E', '#1F4A36', '#5C3A5E', '#2F4B5C'];
+
+  function initials(n){ var p = (n || '').trim().split(/\s+/).filter(Boolean); if(!p.length) return '?'; return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
+  function color(n){ var h = 0; for(var k = 0; k < (n || '').length; k++) h = (h * 31 + n.charCodeAt(k)) >>> 0; return COLORS[h % COLORS.length]; }
+  function paintAvatar(n){ av.textContent = initials(n); av.style.background = color((n || '').trim().toLowerCase()); }
+  var dateFmt = function(iso, opts){ try{ return new Date(iso).toLocaleDateString('ru-RU', opts); }catch(e){ return iso.slice(0, 10); } };
+
+  function render(){
+    nameI.value = data.name; mailI.value = data.email;
+    paintAvatar(data.name); title.textContent = data.name || 'Гость';
+    document.getElementById('pfSince').textContent = dateFmt(data.since, {day: 'numeric', month: 'long', year: 'numeric'});
+    document.getElementById('pfSinceShort').textContent = dateFmt(data.since, {month: 'long', year: 'numeric'});
+  }
+  function setEdit(on){
+    f.classList.toggle('editing', on);
+    [nameI, mailI].forEach(function(i){ i.readOnly = !on; });
+    bEdit.hidden = on; bSave.hidden = !on; bCancel.hidden = !on;
+    document.getElementById('pfNameErr').hidden = true; document.getElementById('pfEmailErr').hidden = true;
+    if(on){ status.textContent = ''; nameI.focus(); }
+  }
+  bEdit.addEventListener('click', function(){ setEdit(true); });
+  bCancel.addEventListener('click', function(){ render(); setEdit(false); status.textContent = 'Изменения отменены'; bEdit.focus(); });
+  nameI.addEventListener('input', function(){ if(!nameI.readOnly) paintAvatar(nameI.value); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && f.classList.contains('editing')) bCancel.click(); });
+  f.addEventListener('submit', function(e){
+    e.preventDefault(); if(nameI.readOnly) return;
+    var n = nameI.value.trim(), m = mailI.value.trim(), ok = true;
+    document.getElementById('pfNameErr').hidden = !!n; if(!n) ok = false;
+    var mailOk = !m || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m); document.getElementById('pfEmailErr').hidden = mailOk; if(!mailOk) ok = false;
+    if(!ok){ (n ? mailI : nameI).focus(); return; }
+    data = {name: n, email: m, since: data.since};
+    var saved = store(data);
+    render(); setEdit(false);
+    status.textContent = saved ? 'Сохранено' : 'Сохранено до закрытия страницы';
+    bEdit.focus();
+  });
+  render(); setEdit(false);
+  if(!data.name) status.textContent = 'Заполните профиль — нажмите «Редактировать»';
+})();
+</script>
+
+</body>
+</html>

@@ -337,3 +337,68 @@
   var gal = document.getElementById('gallery');
   if(gal) new MutationObserver(function(){ scan(gal); }).observe(gal, {childList: true});
 })();
+
+// ===== Таймер до Нового года: дни — часы — минуты — секунды =====
+(function(){
+  var box = document.querySelector('[data-countdown]'); if(!box) return;
+  var target = Date.parse(box.getAttribute('data-countdown'));
+  var el = {}; ['d', 'h', 'm', 's'].forEach(function(k){ el[k] = box.querySelector('[data-cd="' + k + '"]'); el[k + 'l'] = box.querySelector('[data-cd-l="' + k + '"]'); });
+  var FORMS = {d: ['день', 'дня', 'дней'], h: ['час', 'часа', 'часов'], m: ['минута', 'минуты', 'минут'], s: ['секунда', 'секунды', 'секунд']};
+  function plural(n, f){ var a = n % 100, b = n % 10; if(a > 10 && a < 20) return f[2]; if(b === 1) return f[0]; if(b > 1 && b < 5) return f[1]; return f[2]; }
+  var timer = null, prev = {};
+  function tick(){
+    var left = target - Date.now();
+    if(left <= 0){
+      clearInterval(timer); box.classList.add('is-done'); box.querySelector('.cd-done').hidden = false;
+      box.setAttribute('aria-label', 'Новый год начался'); return;
+    }
+    var t = Math.floor(left / 1000), v = {d: Math.floor(t / 86400), h: Math.floor(t % 86400 / 3600), m: Math.floor(t % 3600 / 60), s: t % 60};
+    for(var k in v){
+      var txt = k === 'd' ? String(v[k]) : String(v[k]).padStart(2, '0');
+      if(prev[k] !== txt){ el[k].textContent = txt; el[k].classList.remove('tick'); void el[k].offsetWidth; el[k].classList.add('tick'); prev[k] = txt; }
+      el[k + 'l'].textContent = plural(v[k], FORMS[k]);
+    }
+    box.setAttribute('aria-label', 'До Нового года ' + v.d + ' ' + plural(v.d, FORMS.d) + ', ' + v.h + ' ' + plural(v.h, FORMS.h));
+  }
+  tick(); timer = setInterval(tick, 1000);
+  window.SOH_countdownTest = function(ms){ target = Date.now() + ms; box.classList.remove('is-done'); box.querySelector('.cd-done').hidden = true; clearInterval(timer); tick(); timer = setInterval(tick, 1000); };
+})();
+
+// ===== Галерея фото: полноэкранный просмотр, стрелки, Esc, клик вне фото, свайп =====
+(function(){
+  var grids = document.querySelectorAll('[data-lightbox]'); if(!grids.length) return;
+  var lb = document.createElement('div'); lb.className = 'lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true'); lb.setAttribute('aria-label', 'Просмотр фото');
+  var ARR = function(d){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="' + d + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; };
+  lb.innerHTML = '<button class="lb-btn lb-close" type="button" aria-label="Закрыть">' + ARR('M6 6l12 12M18 6L6 18') + '</button>' +
+    '<button class="lb-btn lb-prev" type="button" aria-label="Предыдущее фото">' + ARR('M15 5l-7 7 7 7') + '</button>' +
+    '<figure class="lb-figure"><img alt=""><figcaption><span class="lb-count"></span><span class="lb-cap"></span></figcaption></figure>' +
+    '<button class="lb-btn lb-next" type="button" aria-label="Следующее фото">' + ARR('M9 5l7 7-7 7') + '</button>';
+  document.body.appendChild(lb);
+  var img = lb.querySelector('img'), cap = lb.querySelector('.lb-cap'), cnt = lb.querySelector('.lb-count');
+  var items = [], i = 0, opener = null;
+  function show(k){
+    i = (k + items.length) % items.length; var a = items[i];
+    img.classList.add('lb-swap');
+    var src = a.getAttribute('href'); if(!src || src === '#') src = a.querySelector('img').src;
+    var n = new Image(); n.onload = n.onerror = function(){ img.src = src; img.alt = a.querySelector('img').alt; img.classList.remove('lb-swap'); }; n.src = src;
+    cap.textContent = a.getAttribute('data-caption') || ''; cnt.textContent = (i + 1) + ' / ' + items.length;
+  }
+  function open(list, k, from){ items = list; opener = from; show(k); lb.classList.add('open'); document.body.classList.add('lb-lock'); lb.querySelector('.lb-close').focus(); }
+  function close(){ lb.classList.remove('open'); document.body.classList.remove('lb-lock'); if(opener) opener.focus(); }
+  grids.forEach(function(g){
+    var list = Array.prototype.slice.call(g.querySelectorAll('a.lb-item'));
+    list.forEach(function(a, k){ a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); open(list, k, a); }); });
+  });
+  lb.querySelector('.lb-close').addEventListener('click', close);
+  lb.querySelector('.lb-prev').addEventListener('click', function(e){ e.stopPropagation(); show(i - 1); });
+  lb.querySelector('.lb-next').addEventListener('click', function(e){ e.stopPropagation(); show(i + 1); });
+  lb.addEventListener('click', function(e){ if(e.target === lb || e.target.classList.contains('lb-figure')) close(); });
+  document.addEventListener('keydown', function(e){
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close(); else if(e.key === 'ArrowLeft') show(i - 1); else if(e.key === 'ArrowRight') show(i + 1);
+    else if(e.key === 'Tab'){ var f = lb.querySelectorAll('button'); var first = f[0], last = f[f.length - 1]; if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); } else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); } }
+  });
+  var x0 = null, y0 = 0;
+  lb.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
+  lb.addEventListener('touchend', function(e){ if(x0 === null) return; var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null; if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(dx < 0 ? i + 1 : i - 1); });
+})();
