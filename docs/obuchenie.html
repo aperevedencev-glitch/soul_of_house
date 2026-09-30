@@ -281,12 +281,13 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
           </div>
           <span class="error-msg">Выберите программу или ту, что ближе всего</span>
         </div>
-        <button type="submit" class="submit">Продолжить в Telegram</button>
-        <p class="fine-print">Бот передаст заявку мастеру, ответ придёт в Telegram</p>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="submit">Отправить заявку</button>
+        <p class="fine-print">Заявка уйдёт мастеру, ответ придёт в Telegram через бота @SoulHomeRuBot</p>
       </form>
       <div class="success" id="successState" hidden>
-        <h3>Последний шаг</h3>
-        <p>Вы выбрали программу «<span id="successCourse"></span>». Нажмите кнопку, чтобы открыть бота @SoulHomeRuBot: он передаст заявку мастеру, и ответ придёт вам прямо в Telegram.</p>
+        <h3 id="successTitle">Последний шаг</h3>
+        <p id="successText">Вы выбрали программу «<span id="successCourse"></span>». Нажмите кнопку, чтобы открыть бота @SoulHomeRuBot: он передаст заявку мастеру, и ответ придёт вам прямо в Telegram.</p>
         <a class="btn-primary" id="successTg" href="https://t.me/SoulHomeRuBot" target="_blank" rel="noopener">Отправить заявку в Telegram</a>
         <a class="link-inline" href="uroki.html">А пока загляните в бесплатные уроки →</a>
       </div>

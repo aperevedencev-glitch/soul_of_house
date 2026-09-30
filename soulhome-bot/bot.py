@@ -141,6 +141,13 @@ async def notify_admin(context: ContextTypes.DEFAULT_TYPE, update: Update, title
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data.clear()
     arg = (context.args[0] if context.args else "").lower()
+    # заявка с сайта: t.me/SoulHomeRuBot?start=velvet-K7F3Q — номер заявки после дефиса
+    arg, _, lead_id = arg.partition("-")
+    lead_id = re.sub(r"[^a-z0-9]", "", lead_id)[:8].upper()
+    if lead_id:
+        context.user_data["site_lead"] = lead_id
+        await notify_admin(context, update, f"🔗 Клиент по заявке №{lead_id} с сайта открыл бота",
+                           "Теперь ему можно ответить прямо здесь.")
     if arg in F.ENTRY_ARGS:  # вход в автоворонку для компаний
         caption = "Мур! Я Нейрокот, помощник студии Soul of Home 🐾 Оформляем офисы к новогодним корпоративам под ключ."
         if WELCOME_PHOTO.exists():

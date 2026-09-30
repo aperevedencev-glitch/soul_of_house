@@ -243,12 +243,13 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
           </label>
         </div>
         <label class="consent"><input type="checkbox" name="ok" required><span>Согласен на обработку персональных данных для ответа на заявку</span></label>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <p class="err" id="lm-err" hidden></p>
         <button class="btn" type="submit">Получить чек-лист и концепцию</button>
       </form>
       <div class="thanks" id="lm-thanks" hidden>
-        <h3>Готово — чек-лист открыт</h3>
-        <p>Чтобы заявка дошла до мастера, отправьте её в Telegram: нажмите кнопку, затем вставьте текст заявки (он уже скопирован) и прикрепите фото помещения.</p>
+        <h3 id="lm-th-title">Готово — чек-лист открыт</h3>
+        <p id="lm-th-text">Чтобы заявка дошла до мастера, отправьте её в Telegram: нажмите кнопку, затем вставьте текст заявки (он уже скопирован) и прикрепите фото помещения.</p>
         <a class="btn" id="lm-tg" onclick="window.SOH_goal&&SOH_goal('tg_office')" href="https://t.me/SoulHomeRuBot?start=office" target="_blank" rel="noopener">Отправить в Telegram</a>
         <a class="btn ghost" href="#lm-checklist">Вернуться к чек-листу</a>
       </div>
@@ -319,10 +320,24 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
     if(msg){ err.textContent = msg; err.hidden = false; return; }
     err.hidden = true;
     var text = 'Заявка на новогоднее оформление (чек-лист)\nИмя: '+f.name.value.trim()+'\nКомпания: '+(f.company.value.trim()||'—')+'\nТелефон: '+f.phone.value.trim()+'\nE-mail: '+(f.email.value.trim()||'—')+'\nДата корпоратива: '+(f.date.value||'—')+'\nЧто оформить: '+f.zone.value;
-    try{ navigator.clipboard && navigator.clipboard.writeText(text).catch(function(){}); }catch(e){}
-    form.hidden = true; document.getElementById('lm-thanks').hidden = false;
-    if(window.SOH_goal) SOH_goal('lead_office');
-    unlock();
+    var btn = form.querySelector('button[type=submit]'); if(btn.disabled) return;
+    btn.disabled = true; var lbl = btn.textContent; btn.textContent = 'Отправляем…';
+    var send = window.SOH_sendLead ? SOH_sendLead({form: 'office', name: f.name.value, company: f.company.value, phone: f.phone.value, email: f.email.value, date: f.date.value, zone: f.zone.value, website: f.website.value}) : Promise.resolve(null);
+    send.then(function(id){
+      var tg = document.getElementById('lm-tg');
+      if(id){
+        document.getElementById('lm-th-title').textContent = 'Заявка №' + id + ' у мастера, чек-лист открыт';
+        document.getElementById('lm-th-text').textContent = 'Мастер свяжется с вами по телефону. Хотите быстрее и точнее по смете — откройте бота и пришлите 2–3 фото помещения.';
+        tg.textContent = 'Открыть бота и прислать фото';
+        tg.href = 'https://t.me/SoulHomeRuBot?start=office-' + id;
+      } else {
+        try{ navigator.clipboard && navigator.clipboard.writeText(text).catch(function(){}); }catch(e){}
+      }
+      btn.disabled = false; btn.textContent = lbl;
+      form.hidden = true; document.getElementById('lm-thanks').hidden = false;
+      if(window.SOH_goal) SOH_goal('lead_office');
+      unlock();
+    });
   });
 })();
 </script>

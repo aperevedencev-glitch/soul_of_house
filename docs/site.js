@@ -43,6 +43,19 @@
     });
   };
 
+  // ----- заявки с сайта → мастеру через бота (api/lead.php на хостинге reg.ru) -----
+  // Без сервера (GitHub Pages, превью) тихо возвращает null — тогда заявку передаёт кнопка Telegram.
+  window.SOH_sendLead = function(data){
+    if(!/^https?:$/.test(location.protocol) || !window.fetch) return Promise.resolve(null);
+    data.page = location.pathname; data.website = data.website || '';
+    var ctl = window.AbortController ? new AbortController() : null, t = setTimeout(function(){ if(ctl) ctl.abort(); }, 9000);
+    return fetch('api/lead.php', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data), signal: ctl ? ctl.signal : undefined})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ clearTimeout(t); return j && j.ok && /^[A-Z0-9]{3,8}$/.test(j.id) ? j.id : null; })
+      .catch(function(){ clearTimeout(t); return null; });
+  };
+  window.SOH_TG = 'https://t.me/SoulHomeRuBot';
+
   // ----- форма записи: выбор курса → Telegram-бот -----
   var form = document.getElementById('applyForm');
   if(form){
@@ -57,11 +70,21 @@
     form.addEventListener('submit', function(e){
       e.preventDefault();
       if(!checkRadio()) return;
-      var r = form.querySelector('input[name="course"]:checked');
-      document.getElementById('successCourse').textContent = r.value;
-      document.getElementById('successTg').href = 'https://t.me/SoulHomeRuBot?start=' + r.dataset.tg;
-      form.hidden = true; intro.hidden = true; success.hidden = false;
-      if(window.SOH_goal) SOH_goal('apply_course');
+      var r = form.querySelector('input[name="course"]:checked'), btn = form.querySelector('.submit');
+      if(btn.disabled) return;
+      btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Отправляем…';
+      SOH_sendLead({form: 'course', course: r.value, website: (form.elements.website || {}).value}).then(function(id){
+        document.getElementById('successCourse').textContent = r.value;
+        document.getElementById('successTg').href = SOH_TG + '?start=' + r.dataset.tg + (id ? '-' + id : '');
+        if(id){
+          document.getElementById('successTitle').textContent = 'Заявка №' + id + ' у мастера';
+          document.getElementById('successText').textContent = 'Мастер уже видит, что вы выбрали программу «' + r.value + '». Откройте бота @SoulHomeRuBot — там он ответит вам и пришлёт подробности.';
+          document.getElementById('successTg').textContent = 'Открыть бота';
+        }
+        btn.disabled = false; btn.textContent = btn.dataset.label;
+        form.hidden = true; intro.hidden = true; success.hidden = false;
+        if(window.SOH_goal) SOH_goal('apply_course');
+      });
     });
   }
 })();
