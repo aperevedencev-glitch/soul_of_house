@@ -1,0 +1,31 @@
+{
+  "name": "Soul of Home — мастерская и школа ручной работы",
+  "short_name": "Soul of Home",
+  "description": "Авторские новогодние шары ручной работы, курсы и бесплатные уроки об уюте в доме.",
+  "lang": "ru",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0E1C16",
+  "theme_color": "#0E1C16",
+  "categories": ["education", "lifestyle", "shopping"],
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "screenshots": [
+    {"src": "img/screenshot-mobile.jpg", "sizes": "390x844", "type": "image/jpeg", "form_factor": "narrow", "label": "Главная страница на телефоне"},
+    {"src": "img/screenshot-wide.jpg", "sizes": "1280x800", "type": "image/jpeg", "form_factor": "wide", "label": "Главная страница на компьютере"}
+  ],
+  "shortcuts": [
+    {"name": "Мои работы", "url": "raboty.html", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]},
+    {"name": "Бесплатные уроки", "url": "uroki.html", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]},
+    {"name": "Записаться на обучение", "url": "obuchenie.html#apply", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]}
+  ]
+}
