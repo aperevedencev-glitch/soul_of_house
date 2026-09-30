@@ -94,7 +94,7 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
         <p class="count-line">Показано моделей: <b id="shownCount">12</b> из 12 · Отмечено: <b id="likedCount">0</b></p>
       </div>
     </div>
-    <div class="gallery" id="gallery"></div>
+    <div class="gallery" id="gallery" aria-busy="true"><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article><article class="work skel-card" aria-hidden="true"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></article></div>
   </div>
 </section>
 
@@ -206,6 +206,7 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
       '<button class="heart" type="button" data-like="'+w.id+'" aria-pressed="'+(liked[w.id]?'true':'false')+'" aria-label="Отметить: '+w.name+'">'+HEART+'</button></div>'+
     '</article>';
   }).join('');
+  gallery.removeAttribute('aria-busy');
 
   function refreshLikes(){
     document.getElementById('likedCount').textContent = Object.keys(liked).filter(function(k){return liked[k];}).length;
