@@ -3,15 +3,17 @@ AddDefaultCharset UTF-8
 Options -Indexes
 DirectoryIndex index.html
 
-# ---- HTTPS и адрес без www (работает после выпуска SSL-сертификата) ----
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteCond %{HTTPS} off
-  RewriteCond %{HTTP:X-Forwarded-Proto} !https
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
-</IfModule>
+# ---- HTTPS и адрес без www ----
+# ВЫКЛЮЧЕНО, пока не выпущен SSL-сертификат: иначе сайт не откроется.
+# Когда https://ваш-домен.ru откроется с замком — уберите «#» в 8 строках ниже.
+#<IfModule mod_rewrite.c>
+#  RewriteEngine On
+#  RewriteCond %{HTTPS} off
+#  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+#  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+#</IfModule>
 
 ErrorDocument 404 /404.html
 
