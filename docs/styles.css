@@ -445,7 +445,7 @@ footer.site{padding:48px 0 36px;font-size:13px;color:var(--muted);border-top:1px
 @media (hover:hover) and (pointer:fine){.to-top:hover{background:#22392C;}}
 @media (prefers-reduced-motion:reduce){.to-top,.to-top.show{transition:none;}}
 
-/* ===== Главный блок: плавный градиент зелёный бархат → золото → красный бархат + параллакс ===== */
+/* ===== Шапки страниц: плавный градиент зелёный бархат → золото → красный бархат + параллакс (главный экран — ниже, свой) ===== */
 .hero-bg{position:absolute;left:0;right:0;top:-50%;height:150%;pointer-events:none;overflow:hidden;background:#0E1C16;
   transform:translate3d(0,var(--hero-shift,0px),0);will-change:transform;}
 .hero-bg::before{content:"";position:absolute;top:0;left:0;width:320%;height:100%;
@@ -703,3 +703,41 @@ body.lb-lock{overflow:hidden;}
 @media (max-width:900px){.about-mission-grid{grid-template-columns:1fr;gap:40px;}.mission-art{max-width:320px;}.team-grid,.numbers-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;}.section-head{margin-left:auto;margin-right:auto;}}
 @media (max-width:900px) and (min-width:600px){.team-grid,.numbers-grid{grid-template-columns:repeat(2,1fr);max-width:none;}}
 @media (max-width:600px){.mission-art{max-width:250px;}.about-cta h2{font-size:26px;}.about-cta .cta-row a{flex:1 1 100%;text-align:center;}}
+
+/* ---------- ПОДЕЛИТЬСЯ + ТОСТ ---------- */
+.share-btn{all:unset;box-sizing:border-box;cursor:pointer;width:36px;height:36px;flex-shrink:0;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--pine);background:var(--paper);transition:border-color .2s ease,color .2s ease,background .2s ease;}
+@media (hover:hover) and (pointer:fine){.share-btn:hover{border-color:var(--gold);color:var(--gold-ink);}}
+.share-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.share-btn:active{background:var(--line);}
+.work-actions{display:flex;gap:8px;flex-shrink:0;}
+.lesson{position:relative;}
+.lesson > .share-btn{position:absolute;right:-1px;top:76px;}
+.dlg-share{font-family:inherit;font-size:15px;font-weight:700;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:10px 16px;cursor:pointer;color:var(--pine-deep);display:inline-flex;gap:8px;align-items:center;}
+@media (hover:hover) and (pointer:fine){.dlg-share:hover{border-color:var(--gold);}}
+.toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);
+  background:var(--pine-deep);color:var(--ivory);font-size:15px;font-weight:600;line-height:1.4;padding:13px 20px 13px 16px;border-radius:99px;
+  box-shadow:0 14px 40px -12px rgba(14,28,22,.55);border:1px solid rgba(228,199,126,.35);
+  opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:opacity .25s ease,transform .25s ease;}
+.toast svg{color:var(--gold-soft);flex-shrink:0;}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+@media (prefers-reduced-motion:reduce){.toast{transition:opacity .2s;transform:translate(-50%,0);}}
+@media (max-width:820px){.share-btn{width:44px;height:44px;}.lesson > .share-btn{right:-5px;top:106px;}.dlg-share{min-height:44px;}}
+
+/* ---------- ИСКРЫ НА ГЛАВНОМ ЭКРАНЕ ---------- */
+.hero-sparks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;
+  -webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,.45) 38%,#000 62%);mask-image:linear-gradient(90deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,.45) 38%,#000 62%);}
+@media (max-width:820px){.hero-sparks{-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 28%,rgba(0,0,0,.35) 42%,rgba(0,0,0,.35) 100%);mask-image:linear-gradient(180deg,#000 0%,#000 28%,rgba(0,0,0,.35) 42%,rgba(0,0,0,.35) 100%);}}
+
+/* ---------- ГЛАВНЫЙ ЭКРАН: градиент тёмно-зелёный → золото → айвори, цикл 7 с ---------- */
+/* Основной слой перетекает между тёмно-зелёным и приглушённым золотом; айвори — мягкое сияние справа (за Нейрокотом),
+   под текстом слева его нет, а затемнение .hero-bg::after держит контраст текста в любой фазе. */
+.hero:not(.compact) .hero-bg::before{
+  background:linear-gradient(120deg,#0E1C16 0%,#123A29 16%,#1E4D37 28%,#4F4A24 42%,#8A6A2E 52%,#6B5222 60%,#1E4D37 76%,#123A29 88%,#0E1C16 100%);
+  animation:heroFlowT 7s ease-in-out infinite alternate;}
+.hero-glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 42% 38% at 76% 58%,rgba(246,241,228,.30) 0%,rgba(228,199,126,.16) 38%,rgba(199,154,70,0) 72%),
+             radial-gradient(ellipse 30% 26% at 90% 38%,rgba(246,241,228,.14) 0%,rgba(246,241,228,0) 70%);
+  opacity:.25;animation:heroGlow 7s ease-in-out infinite alternate;will-change:opacity,transform;}
+@keyframes heroGlow{0%{opacity:.2;transform:scale(.96);}55%{opacity:.75;transform:scale(1.03);}100%{opacity:1;transform:scale(1.06);}}
+@media (max-width:820px){.hero-glow{background:radial-gradient(ellipse 70% 30% at 55% 36%,rgba(246,241,228,.26) 0%,rgba(228,199,126,.12) 45%,rgba(199,154,70,0) 75%);}}
+@media (prefers-reduced-motion:reduce){.hero-glow{animation:none;opacity:.6;}}

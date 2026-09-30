@@ -184,6 +184,7 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
       <dl class="meta-grid" id="dlgMeta"></dl>
       <div class="dlg-actions">
         <button class="like-toggle" id="dlgLike" type="button" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7C19.5 15.9 12 20.5 12 20.5z" stroke="currentColor" stroke-width="1.7" fill="none"/></svg><span>Хочу такой на свою ёлку</span></button>
+        <button class="dlg-share" id="dlgShare" type="button" data-share data-share-url="raboty.html" data-share-title=""><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="18" cy="5" r="2.6" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.6" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3" stroke="currentColor" stroke-width="1.8"/></svg><span>Поделиться</span></button>
         <div class="dlg-nav"><button type="button" id="dlgPrev" aria-label="Предыдущая работа">←</button><button type="button" id="dlgNext" aria-label="Следующая работа">→</button></div>
       </div>
     </div>
@@ -232,7 +233,8 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
     return '<article class="work" id="w-'+w.id+'" data-tags="'+w.tags+(liked[w.id]?' liked':'')+'" data-i="'+i+'">'+
       '<button class="work-btn" type="button" data-open="'+i+'" aria-label="Открыть: '+w.name+'"><img src="img/'+w.id+'.jpg" alt="'+w.name+'" loading="lazy"><span class="zoom">Подробнее</span></button>'+
       '<div class="work-info"><div><h3 class="work-name">'+w.name+'</h3><p class="work-coll">'+w.coll+'</p></div>'+
-      '<button class="heart" type="button" data-like="'+w.id+'" aria-pressed="'+(liked[w.id]?'true':'false')+'" aria-label="Отметить: '+w.name+'">'+HEART+'</button></div>'+
+      '<div class="work-actions"><button class="share-btn" type="button" data-share data-share-url="raboty.html#'+w.id+'" data-share-title="'+w.name+'" aria-label="Поделиться: '+w.name+'">'+(window.SOH_SHARE_SVG||'')+'</button>'+
+      '<button class="heart" type="button" data-like="'+w.id+'" aria-pressed="'+(liked[w.id]?'true':'false')+'" aria-label="Отметить: '+w.name+'">'+HEART+'</button></div></div>'+
     '</article>';
   }).join('');
   gallery.removeAttribute('aria-busy');
@@ -262,6 +264,7 @@ window.SOH_goal = function(name){ try{ var c = window.SOH_ANALYTICS || {}; if(wi
       '<div><dt>Материалы</dt><dd>'+w.mat+'</dd></div><div><dt>Цвета</dt><dd>'+w.col+'</dd></div>'+
       '<div><dt>Размер</dt><dd>8 см (без подвески)</dd></div><div><dt>Особенность</dt><dd>'+w.feat+'</dd></div>';
     document.getElementById('dlgLike').setAttribute('aria-pressed', liked[w.id] ? 'true' : 'false');
+    var sh = document.getElementById('dlgShare'); sh.setAttribute('data-share-url', 'raboty.html#' + w.id); sh.setAttribute('data-share-title', w.name);
   }
   function open(i){ show(i); if(!dlg.open){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute('open',''); } }
   gallery.addEventListener('click', function(e){
