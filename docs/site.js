@@ -448,3 +448,137 @@
   var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ io.unobserve(e.target); run(e.target); } }); }, {threshold: 0.5});
   els.forEach(function(el){ el.textContent = '0'; io.observe(el); });
 })();
+
+// ===== Кнопка «Поделиться» =====
+// Любой элемент с data-share: data-share-url — относительная ссылка (raboty.html#cameo), data-share-title — название.
+// Телефон (сенсорный экран + системный шаринг) — открывает меню «Поделиться»; компьютер — копирует ссылку, тост на 2 секунды.
+(function(){
+  var SHARE_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="18" cy="5" r="2.6" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.6" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3" stroke="currentColor" stroke-width="1.8"/></svg>';
+  window.SOH_SHARE_SVG = SHARE_SVG;
+
+  // адрес сайта берём из canonical — так делятся «чистой» ссылкой, а не адресом превью или приложения
+  function absUrl(rel){
+    var can = document.querySelector('link[rel="canonical"]');
+    var base = can && /^https?:/.test(can.href) ? can.href : location.href;
+    try{ return new URL(rel || '', base).href; }catch(e){ return location.href; }
+  }
+
+  var toast = null, timer = null;
+  function showToast(text){
+    if(!toast){ toast = document.createElement('div'); toast.className = 'toast'; toast.setAttribute('role', 'status'); toast.setAttribute('aria-live', 'polite'); document.body.appendChild(toast); }
+    toast.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>';
+    toast.lastChild.textContent = text;
+    clearTimeout(timer);
+    toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
+    timer = setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+  }
+  window.SOH_toast = showToast;
+
+  function copy(text){
+    if(navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).catch(function(){ return legacy(text); });
+    return legacy(text);
+  }
+  function legacy(text){
+    return new Promise(function(ok, fail){
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0'; document.body.appendChild(ta); ta.select();
+      var done = false; try{ done = document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta); done ? ok() : fail();
+    });
+  }
+  var isPhone = function(){ return !!navigator.share && window.matchMedia && matchMedia('(pointer: coarse)').matches; };
+
+  window.SOH_share = function(rel, title){
+    var url = absUrl(rel);
+    if(isPhone()){
+      return navigator.share({title: title ? title + ' · Soul of Home' : document.title, url: url}).catch(function(e){
+        if(e && e.name === 'AbortError') return;          // человек закрыл меню — ничего не делаем
+        return copy(url).then(function(){ showToast('Ссылка скопирована!'); });
+      });
+    }
+    return copy(url).then(function(){ showToast('Ссылка скопирована!'); if(window.SOH_goal) SOH_goal('share'); },
+                          function(){ showToast('Не получилось скопировать — ссылка: ' + url); });
+  };
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('[data-share]'); if(!b) return;
+    e.preventDefault(); e.stopPropagation();
+    SOH_share(b.getAttribute('data-share-url'), b.getAttribute('data-share-title'));
+  });
+})();
+
+// ===== Искры бенгальских огней на главном экране =====
+// Медленные тёплые искры (золото, светлое золото, айвори), полупрозрачные; изредка тихий «треск» — 3–4 крошечные искорки.
+// Над текстом (левая часть) почти не видны; стоят на паузе вне экрана, в скрытой вкладке и при «уменьшить движение».
+(function(){
+  var hero = document.querySelector('.hero:not(.compact)'); if(!hero || !window.requestAnimationFrame) return;
+  var cv = document.createElement('canvas'); cv.className = 'hero-sparks'; cv.setAttribute('aria-hidden', 'true');
+  var wrap = hero.querySelector('.wrap'); hero.insertBefore(cv, wrap);
+  var ctx = cv.getContext('2d'); if(!ctx) return;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COLORS = [[228,199,126], [240,212,142], [199,154,70], [246,241,228]];   // --gold-soft, светлое золото, --gold, --ivory
+  var W = 0, H = 0, dpr = 1, sparks = [], bits = [], running = false, last = 0;
+
+  function size(){
+    var r = hero.getBoundingClientRect(); dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var want = Math.round(Math.min(W < 700 ? 22 : 46, W * H / 16000));
+    while(sparks.length < want) sparks.push(spawn(true));
+    sparks.length = want;
+  }
+  function rnd(a, b){ return a + Math.random() * (b - a); }
+  function spawn(anywhere){
+    // больше искр справа, где нет текста
+    var x = Math.random() < .68 ? rnd(W * .45, W) : rnd(0, W);
+    return {x: x, y: anywhere ? rnd(0, H) : H + rnd(4, 30), vx: rnd(-6, 6), vy: -rnd(7, 18), r: rnd(1, 2.4),
+            a: rnd(.4, .85), c: COLORS[(Math.random() * COLORS.length) | 0], ph: rnd(0, 6.28), tw: rnd(1.2, 3.2), wob: rnd(.4, 1.2)};
+  }
+  function crackle(s){
+    for(var i = 0, n = 3 + (Math.random() * 2 | 0); i < n; i++){
+      var ang = rnd(0, 6.28), sp = rnd(18, 42);
+      bits.push({x: s.x, y: s.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 1, c: s.c});
+    }
+  }
+  function dot(x, y, r, c, a){
+    var g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+    g.addColorStop(0, 'rgba(' + c + ',' + a + ')'); g.addColorStop(.25, 'rgba(' + c + ',' + (a * .5) + ')'); g.addColorStop(1, 'rgba(' + c + ',0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 4, 0, 6.2832); ctx.fill();
+  }
+  function frame(t){
+    if(!running) return;
+    var dt = Math.min(.05, (t - (last || t)) / 1000); last = t;
+    ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+    for(var i = 0; i < sparks.length; i++){
+      var s = sparks[i];
+      s.ph += dt * s.tw;
+      s.x += (s.vx + Math.sin(s.ph * s.wob) * 5) * dt; s.y += s.vy * dt;
+      var edge = Math.min(1, s.y / (H * .15), (H - s.y + 30) / (H * .2));            // мягко гаснут у краёв
+      var a = s.a * (.55 + .45 * Math.sin(s.ph)) * Math.max(0, edge);
+      if(a > .01){
+        ctx.strokeStyle = 'rgba(' + s.c + ',' + (a * .45) + ')'; ctx.lineWidth = s.r * .9;      // короткий хвост
+        ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x - s.vx * .6, s.y - s.vy * .6); ctx.stroke();
+        dot(s.x, s.y, s.r, s.c, a);
+      }
+      if(Math.random() < dt * .03) crackle(s);                                             // редкий треск
+      if(s.y < -20 || s.x < -20 || s.x > W + 20) sparks[i] = spawn(false);
+    }
+    for(var j = bits.length - 1; j >= 0; j--){
+      var b = bits[j]; b.life -= dt * 2.2; if(b.life <= 0){ bits.splice(j, 1); continue; }
+      b.x += b.vx * dt; b.y += b.vy * dt; b.vy += 20 * dt;
+      dot(b.x, b.y, .8, b.c, .75 * b.life);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+  function start(){ if(running || reduce) return; running = true; last = 0; requestAnimationFrame(frame); }
+  function stop(){ running = false; }
+  size();
+  if(reduce){ // без движения: несколько неподвижных искорок
+    ctx.globalCompositeOperation = 'lighter'; sparks.slice(0, 14).forEach(function(s){ dot(s.x, s.y, s.r, s.c, s.a * .7); }); return;
+  }
+  var visible = true;
+  if('IntersectionObserver' in window) new IntersectionObserver(function(e){ visible = e[0].isIntersecting; visible && !document.hidden ? start() : stop(); }).observe(hero);
+  document.addEventListener('visibilitychange', function(){ !document.hidden && visible ? start() : stop(); });
+  var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(size, 150); });
+  start();
+})();
