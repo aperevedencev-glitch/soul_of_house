@@ -292,3 +292,48 @@
   (mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply));
   apply();
 })();
+
+// ===== Плавающие шары в фоне главного экрана (цвета палитры, полупрозрачные) =====
+(function(){
+  var bg = document.querySelector('.hero-bg'); if(!bg || bg.querySelector('.hero-orbs')) return;
+  var COL = {emerald: ['#3E8A63', '#1E4D37'], gold: ['#F0D48E', '#C79A46'], berry: ['#B24A57', '#8C2F3B'], ivory: ['#FFFFFF', '#E4D9BE']};
+  // left, top (в % слоя фона), размер, цвет, прозрачность, длительность, сдвиг, задержка, только десктоп
+  var ORBS = [
+    [57, 40, 64, 'gold', .20, 26, '26px', '-34px', -3, 0],
+    [79, 50, 112, 'emerald', .20, 34, '-30px', '-42px', -9, 0],
+    [91, 37, 54, 'berry', .22, 29, '-18px', '30px', -14, 1],
+    [67, 77, 88, 'berry', .16, 38, '34px', '-26px', -6, 0],
+    [7, 82, 60, 'gold', .12, 31, '30px', '-28px', -18, 1],
+    [44, 89, 46, 'ivory', .10, 27, '-24px', '-20px', -11, 1],
+    [95, 80, 92, 'gold', .14, 36, '-36px', '-30px', -21, 0]
+  ];
+  var box = document.createElement('div'); box.className = 'hero-orbs'; box.setAttribute('aria-hidden', 'true');
+  ORBS.forEach(function(o, i){
+    var c = COL[o[3]], id = 'orbg' + i;
+    var el = document.createElement('div');
+    el.className = 'orb' + (o[9] ? ' o-desk' : '');
+    el.style.cssText = 'left:' + o[0] + '%;top:' + o[1] + '%;--s:' + o[2] + 'px;--o:' + o[4] + ';--d:' + o[5] + 's;--dx:' + o[6] + ';--dy:' + o[7] + ';--dl:' + o[8] + 's';
+    el.innerHTML = '<svg viewBox="0 0 100 124"><defs><radialGradient id="' + id + '" cx="36%" cy="34%" r="70%"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></radialGradient></defs>' +
+      '<path d="M50 0V13" stroke="#E4C77E" stroke-width="1.6"/><circle cx="50" cy="12" r="4" fill="none" stroke="#E4C77E" stroke-width="1.6"/>' +
+      '<rect x="41" y="15" width="18" height="11" rx="2" fill="#C79A46"/><circle cx="50" cy="75" r="47" fill="url(#' + id + ')"/>' +
+      '<ellipse cx="34" cy="56" rx="11" ry="7" fill="#fff" opacity=".35" transform="rotate(-30 34 56)"/></svg>';
+    box.appendChild(el);
+  });
+  bg.insertBefore(box, bg.firstChild);
+})();
+
+// ===== Skeleton для фото в карточках: мерцание, пока картинка не загрузилась, затем плавное появление =====
+(function(){
+  var SEL = '.ws-media img, .work-btn img, .lesson-figure img, .b2b-grid img';
+  function hook(img){
+    if(img.dataset.skel) return; img.dataset.skel = '1';
+    if(img.complete && img.naturalWidth > 0) return;
+    var box = img.parentElement; box.classList.add('skel-wrap'); img.classList.add('img-wait');
+    var done = function(){ img.classList.remove('img-wait'); box.classList.remove('skel-wrap'); };
+    img.addEventListener('load', done, {once: true}); img.addEventListener('error', done, {once: true});
+  }
+  function scan(root){ (root || document).querySelectorAll(SEL).forEach(hook); }
+  scan();
+  var gal = document.getElementById('gallery');
+  if(gal) new MutationObserver(function(){ scan(gal); }).observe(gal, {childList: true});
+})();
