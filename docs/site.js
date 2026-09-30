@@ -211,7 +211,7 @@
 (function(){
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   // 1) блоки и карточки: плавно снизу вверх, карточки в сетке — по очереди через 0.1s, один раз
-  var GRIDS = '.modules, .works-strip, .proof-grid, .compare, .hero-stats, .foot-grid, .gallery, .lessons, .b2b-grid';
+  var GRIDS = '.modules, .works-strip, .proof-grid, .compare, .hero-stats, .foot-grid, .gallery, .lessons, .b2b-grid, .team-grid, .numbers-grid';
   if('IntersectionObserver' in window && !reduce){
     document.documentElement.classList.add('rv-on');
     var io = new IntersectionObserver(function(entries){
@@ -432,4 +432,19 @@
   if(!m || !('serviceWorker' in navigator)) return;
   if(location.protocol !== 'https:' && location.hostname !== 'localhost') return;
   window.addEventListener('load', function(){ navigator.serviceWorker.register(m.getAttribute('content')).catch(function(){}); });
+})();
+
+// ===== Счётчики «Цифры» (страница «О нас»): от 0 до значения при появлении, один раз =====
+(function(){
+  var els = document.querySelectorAll('[data-count]'); if(!els.length) return;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function run(el){
+    var to = parseInt(el.getAttribute('data-count'), 10) || 0, dur = 1600, t0 = null;
+    el.setAttribute('aria-label', String(to));
+    function step(t){ if(!t0) t0 = t; var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(to * e); if(p < 1) requestAnimationFrame(step); }
+    el.textContent = '0'; requestAnimationFrame(step);
+  }
+  if(reduce || !('IntersectionObserver' in window)) return; // цифры уже стоят в разметке
+  var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ io.unobserve(e.target); run(e.target); } }); }, {threshold: 0.5});
+  els.forEach(function(el){ el.textContent = '0'; io.observe(el); });
 })();

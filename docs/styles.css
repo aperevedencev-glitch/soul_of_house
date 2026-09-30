@@ -670,3 +670,36 @@ body.lb-lock{overflow:hidden;}
 
 /* ловушка для спам-ботов в формах заявок */
 .hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0;pointer-events:none}
+
+/* ---------- О НАС ---------- */
+.about-mission-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;}
+.mission-phrase{font-family:'Fraunces',Georgia,serif;font-size:clamp(28px,3.4vw,42px);line-height:1.18;color:var(--pine-deep);max-width:17ch;margin:0 0 24px;}
+.mission-text{font-size:16.5px;line-height:1.7;color:var(--pine);max-width:58ch;}
+.mission-art{border-radius:220px 220px 10px 10px;overflow:hidden;border:1px solid var(--gold-soft);padding:8px;background:rgba(199,154,70,.06);max-width:360px;justify-self:center;width:100%;}
+.mission-art img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:212px 212px 6px 6px;}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.team-card{background:var(--ivory);border:1px solid var(--line);border-radius:22px;padding:28px 26px 30px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
+@media (hover:hover) and (pointer:fine){.team-card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(14,28,22,.09);}}
+.team-photo{position:relative;width:148px;height:148px;margin:0 auto 20px;border-radius:50%;overflow:hidden;background:linear-gradient(150deg,#1F3629,#0E1C16);border:3px solid var(--ivory);box-shadow:0 0 0 1.5px var(--gold);}
+.team-photo svg{position:absolute;inset:0;width:100%;height:100%;fill:rgba(228,199,126,.22);}
+.team-photo span{position:absolute;top:12px;right:0;left:0;font-family:'Fraunces',Georgia,serif;font-size:13px;letter-spacing:.2em;color:rgba(228,199,126,.7);z-index:1;}
+.team-photo.has-img img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block;transform:scale(1.15);transform-origin:50% 30%;}
+.team-card h3{font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:500;color:var(--pine-deep);}
+.team-role{font-size:14px;font-weight:700;color:var(--gold-ink);margin:6px 0 12px;}
+.team-text{font-size:15px;color:var(--muted);line-height:1.6;}
+.about-numbers{background:var(--pine-deep);color:var(--ivory);position:relative;overflow:hidden;}
+.about-numbers::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 85% 20%,rgba(199,154,70,.16),transparent 45%),radial-gradient(circle at 10% 90%,rgba(140,47,59,.2),transparent 45%);}
+.about-numbers .wrap{position:relative;}
+.about-numbers h2{color:var(--ivory);}
+.numbers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.num{border:1px solid rgba(228,199,126,.28);border-radius:22px;padding:30px 28px;background:rgba(246,241,228,.03);display:flex;flex-direction:column;gap:6px;}
+.num b{font-family:'Fraunces',Georgia,serif;font-size:clamp(56px,6vw,76px);font-weight:500;line-height:1;color:var(--gold-soft);font-variant-numeric:tabular-nums;}
+.num span{font-size:16px;color:rgba(246,241,228,.85);}
+.num a{margin-top:14px;font-size:14.5px;font-weight:700;color:var(--gold-soft);text-decoration:none;align-self:flex-start;min-height:44px;display:inline-flex;align-items:center;}
+@media (hover:hover) and (pointer:fine){.num a:hover{color:var(--ivory);}}
+.about-cta{padding:72px 0;}
+.about-cta-inner{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;}
+.about-cta h2{font-size:30px;line-height:1.2;max-width:22ch;}
+@media (max-width:900px){.about-mission-grid{grid-template-columns:1fr;gap:40px;}.mission-art{max-width:320px;}.team-grid,.numbers-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;}.section-head{margin-left:auto;margin-right:auto;}}
+@media (max-width:900px) and (min-width:600px){.team-grid,.numbers-grid{grid-template-columns:repeat(2,1fr);max-width:none;}}
+@media (max-width:600px){.mission-art{max-width:250px;}.about-cta h2{font-size:26px;}.about-cta .cta-row a{flex:1 1 100%;text-align:center;}}
