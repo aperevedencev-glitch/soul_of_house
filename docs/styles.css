@@ -667,3 +667,6 @@ body.lb-lock{overflow:hidden;}
   footer.site{padding-bottom:calc(36px + env(safe-area-inset-bottom));}
   body{overscroll-behavior-y:none;}
 }
+
+/* ловушка для спам-ботов в формах заявок */
+.hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0;pointer-events:none}

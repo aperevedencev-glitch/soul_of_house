@@ -12,5 +12,6 @@ DOMAIN="${DOMAIN%/}"; OLD="https://aperevedencev-glitch.github.io/soul_of_house"
 find "$HERE/public_html" -maxdepth 1 -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt' \) \
   -exec sed -i "s#${OLD}#${DOMAIN}#g" {} +
 cp "$HERE/.htaccess" "$HERE/404.html" "$HERE/public_html/"
+cp -r "$HERE/api" "$HERE/public_html/api"
 (cd "$HERE/public_html" && zip -qr9 "$HERE/soul-of-home-regru.zip" . -x '*.DS_Store')
 echo "Готово: $HERE/soul-of-home-regru.zip ($DOMAIN)"
