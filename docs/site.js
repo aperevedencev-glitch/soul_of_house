@@ -402,3 +402,11 @@
   lb.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
   lb.addEventListener('touchend', function(e){ if(x0 === null) return; var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null; if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(dx < 0 ? i + 1 : i - 1); });
 })();
+
+// ===== Офлайн-заглушка: service worker (только на хостинге, где есть <meta name="soh-sw">) =====
+(function(){
+  var m = document.querySelector('meta[name="soh-sw"]');
+  if(!m || !('serviceWorker' in navigator)) return;
+  if(location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+  window.addEventListener('load', function(){ navigator.serviceWorker.register(m.getAttribute('content')).catch(function(){}); });
+})();
