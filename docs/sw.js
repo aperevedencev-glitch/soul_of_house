@@ -1,7 +1,7 @@
 // Service worker Soul of Home — приложение на телефоне и работа без сети.
 // Страницы, стили, скрипты и шрифты кешируются при установке; картинки — по мере просмотра.
 // При изменении файлов сайта увеличьте VERSION — старый кеш удалится сам.
-const VERSION = 'v10';
+const VERSION = 'v11';
 const CORE = 'soh-core-' + VERSION;
 const IMAGES = 'soh-img-' + VERSION;
 const OFFLINE = 'offline.html';
