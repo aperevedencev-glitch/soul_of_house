@@ -1,2 +1,5 @@
 deploy/reg.ru/public_html/
 deploy/reg.ru/*.zip
+marketing/reels/*.mp4
+marketing/reels/*.ttf
+marketing/reels/prev-*.jpg
