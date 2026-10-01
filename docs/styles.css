@@ -747,3 +747,7 @@ body.lb-lock{overflow:hidden;}
 .lesson-zoom:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
 .zoom-hint{position:absolute;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:rgba(14,28,22,.8);color:var(--ivory);font-size:14px;font-weight:700;padding:7px 12px;border-radius:99px;pointer-events:none;transition:background .2s ease;}
 @media (hover:hover) and (pointer:fine){.lesson-zoom:hover .zoom-hint{background:var(--pine-deep);}}
+/* картинки уроков — целиком, в своих пропорциях: без обрезки галереи (4:3, cover) и без увеличения при наведении */
+.lb-item.lesson-zoom{aspect-ratio:auto;background:none;overflow:hidden;}
+.lb-item.lesson-zoom img{height:auto;object-fit:contain;transform:none!important;}
+.lb-item.lesson-zoom::after{display:none;}
